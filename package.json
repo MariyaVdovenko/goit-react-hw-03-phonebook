@@ -1,5 +1,5 @@
 {
-  "name": "goit-react-hw-02-bank-account",
+  "name": "goit-react-hw-03-phonebook",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -17,7 +17,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://MariyaVdovenko.github.io/goit-react-hw-02-bank-account",
+  "homepage": "https://MariyaVdovenko.github.io/goit-react-hw-03-phonebook",
   "eslintConfig": {
     "extends": "react-app"
   },
