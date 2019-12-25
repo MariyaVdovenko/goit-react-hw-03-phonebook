@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import styles from './App.module.css';
+import styles from './App.module.css';
 import ContactForm from './Components/ContactForm/ContactForm';
 import Filter from './Components/Filter/Filter';
 import ContactList from './Components/ContactList/ContactList';
@@ -64,12 +64,6 @@ export default class App extends Component {
       console.log(`${name} already exist`);
       return;
     }
-
-    console.log(filr);
-
-    console.log(`
-    name: ${name}
-    nunber: ${number} `);
 
     this.addContact(name, number);
   };
