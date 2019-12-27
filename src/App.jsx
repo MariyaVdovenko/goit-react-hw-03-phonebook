@@ -4,6 +4,11 @@ import ContactForm from './Components/ContactForm/ContactForm';
 import Filter from './Components/Filter/Filter';
 import ContactList from './Components/ContactList/ContactList';
 import shortId from 'shortid';
+import 'react-notifications/lib/notifications.css';
+import {
+  NotificationContainer,
+  NotificationManager,
+} from 'react-notifications';
 
 //Телефонная книга
 // Возьми свое решение задания из домашней работы 2 и добавь хранение контактов
@@ -61,7 +66,11 @@ export default class App extends Component {
       return contact.name.toLowerCase() === name.toLowerCase();
     });
     if (filr !== undefined) {
-      console.log(`${name} already exist`);
+      NotificationManager.warning(
+        `${name} already exist`,
+        'Try another name',
+        3000,
+      );
       return;
     }
 
@@ -92,15 +101,15 @@ export default class App extends Component {
   render() {
     const { name, filter, number, contacts } = this.state;
     return (
-      <div>
-        <h1>Phonebook</h1>
+      <div className={styles.App}>
+        <h1 className={styles.AppText}>Phonebook</h1>
         <ContactForm
           handleSubmit={this.handleSubmit}
           handleChange={this.handleChange}
           name={name}
           number={number}
         />
-        <h2>Contacts</h2>
+        <h2 className={styles.AppText}>Contacts</h2>
         <Filter handleChange={this.handleChange} />
 
         <ContactList
@@ -108,6 +117,7 @@ export default class App extends Component {
           filterText={filter}
           onDeleteContact={this.deleteContact}
         />
+        <NotificationContainer />
       </div>
     );
   }

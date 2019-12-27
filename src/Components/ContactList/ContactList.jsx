@@ -1,9 +1,8 @@
 import React from 'react';
 import ContactListItem from '../ContactListItem/ContactListItem';
-import styles from './ContactList.module.css';
 
 const ContactList = ({ contacts, filterText, onDeleteContact }) => (
-  <ul className={styles.list}>
+  <ul>
     {contacts
       .filter(contact => {
         return (
