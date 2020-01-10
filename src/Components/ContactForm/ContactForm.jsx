@@ -1,33 +1,61 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styles from './ContactForm.module.css';
+import { NotificationManager } from 'react-notifications';
+import T from 'prop-types';
 
-const ContactForm = ({ name, number, handleChange, handleSubmit }) => (
-  <form className={styles.Form} onSubmit={handleSubmit}>
-    <label className={styles.Label}>
-      <span className={styles.Label__text}>Name</span>
-      <input
-        className={styles.Input}
-        type="text"
-        placeholder="Enter name"
-        value={name}
-        name="name"
-        onChange={handleChange}
-      />
-      <input
-        className={styles.Input}
-        type="tel"
-        pattern="[0-9]{3}-[0-9]{2}-[0-9]{2}"
-        placeholder="Enter number 123-45-67"
-        name="number"
-        value={number}
-        onChange={handleChange}
-      />
-    </label>
+export default class ContactForm extends Component {
+  static propTypes = {
+    onSubmit: T.func,
+  };
 
-    <button className={styles.Button} type="submit">
-      Add contact
-    </button>
-  </form>
-);
+  state = {
+    name: '',
+    number: '',
+  };
+  handleChange = ({ target }) => {
+    const { name, value } = target;
 
-export default ContactForm;
+    this.setState({ [name]: value });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    if (!this.state.name) {
+      NotificationManager.error('Введите имя', 'Ошибка', 5000);
+
+      return;
+    }
+
+    this.props.onSubmit(this.state.name, this.state.number);
+    this.setState({ number: '', name: '' });
+  };
+  render() {
+    return (
+      <form className={styles.Form} onSubmit={this.handleSubmit}>
+        <label className={styles.Label}>
+          <span className={styles.Label__text}>Name</span>
+          <input
+            className={styles.Input}
+            type="text"
+            placeholder="Enter name"
+            value={this.state.name}
+            name="name"
+            onChange={this.handleChange}
+          />
+          <input
+            className={styles.Input}
+            type="tel"
+            placeholder="Enter number"
+            name="number"
+            value={this.state.number}
+            onChange={this.handleChange}
+          />
+        </label>
+
+        <button className={styles.Button} type="submit">
+          Add contact
+        </button>
+      </form>
+    );
+  }
+}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styles from './App.module.css';
 import ContactForm from './Components/ContactForm/ContactForm';
-import Filter from './Components/Filter/Filter';
+
 import ContactList from './Components/ContactList/ContactList';
 import shortId from 'shortid';
 import 'react-notifications/lib/notifications.css';
@@ -9,6 +9,8 @@ import {
   NotificationContainer,
   NotificationManager,
 } from 'react-notifications';
+import allContacts from './contacts.json';
+import T from 'prop-types';
 
 //Телефонная книга
 // Возьми свое решение задания из домашней работы 2 и добавь хранение контактов
@@ -19,20 +21,18 @@ import {
 // хранилища и записываются в состояние.
 
 export default class App extends Component {
-  static defaultProps = {};
-
-  static propTypes = {};
+  static propTypes = {
+    allContacts: T.arrayOf(
+      T.shape({
+        id: T.string.isRequired,
+        name: T.string,
+        number: T.string,
+      }),
+    ),
+  };
 
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    name: '',
-    number: '',
-    filter: '',
+    contacts: allContacts,
   };
 
   componentDidMount() {
@@ -40,7 +40,6 @@ export default class App extends Component {
       const contacts = localStorage.getItem('contacts');
       if (contacts) {
         const parsedContacts = JSON.parse(contacts);
-        console.log(parsedContacts);
 
         this.setState({ contacts: parsedContacts });
       }
@@ -53,18 +52,20 @@ export default class App extends Component {
     }
   }
 
-  handleChange = ({ target }) => {
-    const { name, value } = target;
-
-    this.setState({ [name]: value });
-  };
-  handleSubmit = evt => {
-    evt.preventDefault();
-
-    const { name, number, contacts } = this.state;
+  onSubmit = (name, number) => {
+    const { contacts } = this.state;
     const filr = contacts.find(contact => {
       return contact.name.toLowerCase() === name.toLowerCase();
     });
+
+    if (filr !== undefined) {
+      NotificationManager.warning(
+        `${name} already exist`,
+        'Try another name',
+        3000,
+      );
+      return;
+    }
     if (filr !== undefined) {
       NotificationManager.warning(
         `${name} already exist`,
@@ -74,21 +75,22 @@ export default class App extends Component {
       return;
     }
 
-    this.addContact(name, number);
+    this.saveContact(name, number);
   };
 
-  addContact() {
+  saveContact(name, number) {
+    const contact = {
+      id: shortId.generate(),
+      name: name,
+      number: number,
+    };
+
+    this.addContact(contact);
+  }
+
+  addContact(contact) {
     this.setState(prevState => ({
-      name: '',
-      number: '',
-      contacts: [
-        ...prevState.contacts,
-        {
-          id: shortId.generate(),
-          name: prevState.name,
-          number: prevState.number,
-        },
-      ],
+      contacts: [...prevState.contacts, contact],
     }));
   }
 
@@ -99,24 +101,14 @@ export default class App extends Component {
   };
 
   render() {
-    const { name, filter, number, contacts } = this.state;
+    const { contacts } = this.state;
     return (
       <div className={styles.App}>
         <h1 className={styles.AppText}>Phonebook</h1>
-        <ContactForm
-          handleSubmit={this.handleSubmit}
-          handleChange={this.handleChange}
-          name={name}
-          number={number}
-        />
+        <ContactForm onSubmit={this.onSubmit} />
         <h2 className={styles.AppText}>Contacts</h2>
-        <Filter handleChange={this.handleChange} />
 
-        <ContactList
-          contacts={contacts}
-          filterText={filter}
-          onDeleteContact={this.deleteContact}
-        />
+        <ContactList contacts={contacts} onDeleteContact={this.deleteContact} />
         <NotificationContainer />
       </div>
     );

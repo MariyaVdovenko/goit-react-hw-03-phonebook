@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import styles from './Filter.module.css';
+import T from 'prop-types';
 
 export default class Filter extends Component {
+  static propTypes = {
+    handleChange: T.func,
+  };
   render() {
     return (
       <section>
