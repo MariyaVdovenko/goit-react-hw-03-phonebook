@@ -40,7 +40,7 @@
   text-transform: uppercase;
   user-select: none;
 
-  transition: background-color 200ms ease-in-out;
+  transition: background-color 201ms ease-in-out;
 }
 
 .Button:hover {

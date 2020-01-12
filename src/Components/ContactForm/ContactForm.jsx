@@ -30,6 +30,7 @@ export default class ContactForm extends Component {
     this.setState({ number: '', name: '' });
   };
   render() {
+    console.log(this.state.name);
     return (
       <form className={styles.Form} onSubmit={this.handleSubmit}>
         <label className={styles.Label}>
